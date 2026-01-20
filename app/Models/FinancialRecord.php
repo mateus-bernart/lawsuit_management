@@ -6,15 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class FinancialRecord extends Model
 {
+  public $timestamps = true;
+
   protected $fillable = [
     'id_type',
     'id_category',
     'id_process',
+    'id_status',
     'value',
     'description',
-    'status',
-    'created_at',
-    'updated_at',
   ];
 
   public function process()
@@ -22,9 +22,9 @@ class FinancialRecord extends Model
     return $this->belongsTo(Process::class, 'id_process', 'id');
   }
 
-  public function status()
+  public function statuses()
   {
-    return $this->belongsTo(Status::class, 'status', 'id');
+    return $this->belongsTo(FinancialRecordStatus::class, 'id_status', 'id');
   }
 
   public function category()
@@ -34,6 +34,6 @@ class FinancialRecord extends Model
 
   public function type()
   {
-    return $this->belongsTo(Type::class, 'id_type', 'id');
+    return $this->belongsTo(FinancialRecordType::class, 'id_type', 'id');
   }
 }

@@ -12,12 +12,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
     Select,
     SelectContent,
     SelectItem,
@@ -28,10 +22,12 @@ import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
-import { ChevronDown, Edit, Trash } from 'lucide-react';
+import { format, parseISO } from 'date-fns';
+import { Edit, Trash } from 'lucide-react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
-import { Process, Status } from './process';
+import { Status } from '../Process/process';
+import { FinancialRecord } from './financialRecords';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -39,13 +35,13 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/dashboard',
     },
     {
-        title: 'Processos',
-        href: '/process',
+        title: 'Financeiro',
+        href: '/financial-records',
     },
 ];
 
 type PageProps = {
-    processes: Process[];
+    financialRecords: FinancialRecord[];
     statuses: Status[];
     success?: string;
     error?: string;
@@ -55,7 +51,7 @@ type FormDataProps = {
     id_status: string;
 };
 
-export default function Processes() {
+export default function FinancialRecords() {
     const { props } = usePage<PageProps>();
     const {
         delete: destroy,
@@ -73,19 +69,13 @@ export default function Processes() {
         }
     }, [props, props.success, props.error]);
 
-    const handleDeleteProcess = (id: number) => {
-        destroy(`/processes/${id}`);
-    };
-
-    const handleUpdateActive = (id: number) => {
-        put(`/processes/${id}/toggle-active`, {
-            preserveScroll: true,
-        });
+    const handleDeleteFinancialRecord = (id: number) => {
+        destroy(`/financial-records/${id}`);
     };
 
     const handleUpdateStatus = (id: number, id_status: string) => {
         router.put(
-            `/processes/${id}/toggle-status`,
+            `/financial-records/${id}/toggle-status`,
             { id_status },
             {
                 preserveScroll: true,
@@ -93,24 +83,29 @@ export default function Processes() {
         );
     };
 
-    const columns: ColumnDef<Process>[] = [
+    console.log(props.financialRecords);
+
+    const columns: ColumnDef<FinancialRecord>[] = [
         {
-            accessorKey: 'number',
-            header: () => <div className="ml-9">Número</div>,
+            accessorKey: 'id_type',
+            header: 'Tipo',
             cell: ({ row }) => {
-                const process = row.original;
-                return (
-                    <div className="flex items-center">
-                        <Button
-                            variant={'ghost'}
-                            size="icon"
-                            onClick={() => get(`/processes/${process.id}/edit`)}
-                        >
-                            <Edit></Edit>
-                        </Button>
-                        <p className="flex justify-center">{process.number}</p>
-                    </div>
-                );
+                const record = row.original;
+                return <p>{record.type.description}</p>;
+            },
+        },
+        {
+            accessorKey: 'id_process',
+            header: 'Processo',
+            cell: ({ row }) => {
+                return <p>{row?.original?.process?.number}</p>;
+            },
+        },
+        {
+            accessorKey: 'id_category',
+            header: 'Categoria',
+            cell: ({ row }) => {
+                return <p>{row.original.category.description}</p>;
             },
         },
         {
@@ -118,24 +113,34 @@ export default function Processes() {
             header: 'Descrição',
         },
         {
-            accessorKey: 'type',
-            header: 'Tipo',
+            accessorKey: 'value',
+            header: 'Valor',
             cell: ({ row }) => {
-                return <p>{row.original.type.description}</p>;
+                return <p>R$ {row.original.value}</p>;
+            },
+        },
+        {
+            accessorKey: 'created_at',
+            header: 'Data',
+            cell: ({ row }) => {
+                const date = row.original.created_at;
+                const parsed = parseISO(date); // "2025-09-21"
+                const parsedDate = format(parsed, 'dd/MM/yyyy'); // "21/09/2025"
+                return <p>{parsedDate}</p>;
             },
         },
         {
             id: 'id',
             header: 'Status',
             cell: ({ row }) => {
-                const process = row.original;
+                const record = row.original;
 
                 return (
-                    <div className="w-50">
+                    <div className="w-30">
                         <Select
-                            value={process.id_status.toString()}
+                            value={record.id_status.toString()}
                             onValueChange={(value) => {
-                                handleUpdateStatus(process.id, value);
+                                handleUpdateStatus(record.id, value);
                             }}
                         >
                             <SelectTrigger>
@@ -157,50 +162,24 @@ export default function Processes() {
             },
         },
         {
-            accessorKey: 'active',
-            header: 'Ativo / Inativo',
-            cell: ({ row }) => {
-                const process = row.original;
-                const activeOption =
-                    process.active.toString() === '1' ? 'ativo' : 'inativo';
-                const activeText =
-                    process.active.toString() === '1' ? 'inativo' : 'ativo';
-                return (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                className={
-                                    process.active.toString() === '1'
-                                        ? 'bg-green-100 hover:bg-green-200 dark:bg-green-300 dark:text-black dark:hover:bg-green-100'
-                                        : 'bg-red-100 hover:bg-red-200 dark:bg-red-300 dark:text-black dark:hover:bg-red-100'
-                                }
-                                style={{ border: 'none' }}
-                            >
-                                {activeOption}
-                                <ChevronDown />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                            <DropdownMenuItem
-                                onClick={() => handleUpdateActive(process.id)}
-                            >
-                                {activeText}
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                );
-            },
-        },
-        {
             id: 'actions',
             header: 'Ações',
             cell: ({ row }) => {
-                const process = row.original;
+                const record = row.original;
 
                 return (
                     <div className="flex gap-2">
+                        <div className="flex items-center">
+                            <Button
+                                variant={'ghost'}
+                                size="icon"
+                                onClick={() =>
+                                    get(`/financial-records/${record.id}/edit`)
+                                }
+                            >
+                                <Edit></Edit>
+                            </Button>
+                        </div>
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
                                 <Button
@@ -218,7 +197,7 @@ export default function Processes() {
                                         Tem certeza?
                                     </AlertDialogTitle>
                                     <AlertDialogDescription>
-                                        Remover o processo {process.number}?
+                                        Remover o registro {record.id}?
                                     </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
@@ -227,7 +206,9 @@ export default function Processes() {
                                     </AlertDialogCancel>
                                     <AlertDialogAction
                                         onClick={() =>
-                                            handleDeleteProcess(process.id)
+                                            handleDeleteFinancialRecord(
+                                                record.id,
+                                            )
                                         }
                                     >
                                         Excluir
@@ -243,27 +224,25 @@ export default function Processes() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Processos" />
+            <Head title="Financeiro" />
 
             <div className="my-4 mb-0 ml-4">
-                <Link href={'/processes/create'}>
+                <Link href={'/financial-records/create'}>
                     <Button className="text-md cursor-pointer bg-green-600 font-bold shadow-lg hover:bg-green-700">
-                        Adicionar processo
+                        Adicionar registro financeiro
                     </Button>
                 </Link>
             </div>
             <div className="m-4 mt-0">
                 <DataTable
                     columns={columns}
-                    data={props.processes}
+                    data={props.financialRecords}
                     searchFields={[
-                        'brand',
-                        'model',
-                        'year',
+                        'process',
+                        'type',
+                        'category',
                         'status',
-                        'active',
-                        'plate_number',
-                        'kilometers',
+                        'description',
                     ]}
                 ></DataTable>
             </div>

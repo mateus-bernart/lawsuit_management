@@ -21,6 +21,7 @@ import {
 import { Button } from "./button"
 import { Input } from "./input"
 import React from "react"
+import { Search } from "lucide-react"
 
 function normalizeString(value: string, whiteSpaceReplace = "-") {
   return value
@@ -70,7 +71,8 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="overflow-hidden rounded-md border">
-      <div className="flex items-center py-4 mx-4">
+      <div className="flex items-center py-4 mx-4 gap-2">
+        <Search color="gray"/>
         <Input
           placeholder="Pesquisar..."
           value={globalFilter}

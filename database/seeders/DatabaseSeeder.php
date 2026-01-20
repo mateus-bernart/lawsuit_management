@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ProcessType;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,6 +14,13 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
+            ProcessTypeSeeder::class,
+            FinancialRecordTypeSeeder::class,
+            CategorySeeder::class,
+            FinancialRecordStatusSeeder::class,
+            ProcessStatusSeeder::class,
+            ProcessSeeder::class,
+            FinancialRecordSeeder::class
         ]);
     }
 }

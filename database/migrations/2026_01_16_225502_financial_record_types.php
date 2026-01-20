@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create("processes", function (Blueprint $table) {
+        Schema::create("financial_record_types", function (Blueprint $table) {
             $table->id();
-            $table->string("number");
             $table->string("description");
-            $table->foreignId("id_type")->constrained("process_types")->default(1)->onDelete('no action');
-            $table->foreignId("id_status")->constrained("process_statuses")->default(1)->onDelete('no action');
-            $table->integer("active")->default(1);
+            $table->integer("status")->default(1);
             $table->timestamps();
         });
     }

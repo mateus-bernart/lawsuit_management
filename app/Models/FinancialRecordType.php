@@ -4,14 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Type extends Model
+class FinancialRecordType extends Model
 {
+  public $timestamps = true;
+
   protected $fillable = [
-    "id",
     "description",
     "status",
-    "created_at",
-    "updated_at"
   ];
 
   public function financialRecords()
