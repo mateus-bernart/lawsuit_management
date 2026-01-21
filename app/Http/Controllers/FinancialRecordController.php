@@ -16,17 +16,28 @@ class FinancialRecordController extends Controller
     public function index()
     {
         $financialRecords =
-            FinancialRecord::with("statuses")
-            ->with("category")
-            ->with("type")
-            ->with("process")
-            ->get();
+            FinancialRecord::with(["statuses", "category", "type", "process"])
+            ->get()
+            ->map(function ($record) {
+                return [
+                    ...$record->toArray(),
+                    'type_description' => $record->type?->description ?? '',
+                    'category_description' => $record->category?->description ?? '',
+                    'status_description' => $record->statuses?->description,
+                    'process_number' => $record->process?->number ?? '',
+                    'created_at' => $record->created_at ?? ''
+                ];
+            });
 
         $statuses = FinancialRecordStatus::all();
+        $categories = Category::all();
+        $types = FinancialRecordType::all();
 
         return inertia('FinancialRecord/Index')->with([
             'financialRecords' => $financialRecords,
             'statuses' => $statuses,
+            'categories' => $categories,
+            'types' => $types,
         ]);
     }
 
@@ -68,12 +79,18 @@ class FinancialRecordController extends Controller
     public function edit(FinancialRecord $financialRecord)
     {
         $statuses = FinancialRecordStatus::all();
+        $processes = Process::all();
+        $types = FinancialRecordType::all();
+        $categories = Category::all();
+
         return inertia('FinancialRecord/Create')->with([
             'financialRecord' => $financialRecord,
-            'number' => $financialRecord->number,
-            'description' => $financialRecord->description,
-            'id_status' => $financialRecord->id_status,
-        ])->with('statuses', $statuses);
+        ])->with([
+            'statuses' => $statuses,
+            'processes' => $processes,
+            'types' => $types,
+            'categories' => $categories
+        ]);
     }
 
     public function destroy(FinancialRecord $financialRecord)
@@ -82,17 +99,10 @@ class FinancialRecordController extends Controller
         return redirect()->route('financial-record.index')->with('success', "FinancialRecordo removido com sucesso!");
     }
 
-    public function toggleActive(FinancialRecord $financialRecord)
-    {
-        $financialRecord->active === 1 ? $financialRecord->active = 0 : $financialRecord->active = 1;
-        $financialRecord->save();
-        return back()->with("success", "FinancialRecordo atualizado com sucesso!");
-    }
-
     public function toggleStatus(FinancialRecord $financialRecord, Request $request)
     {
         $request->validate([
-            'id_status' => 'required|exists:statuses,id',
+            'id_status' => 'required|exists:financial_record_statuses,id',
         ]);
 
         $financialRecord->id_status = $request->id_status;

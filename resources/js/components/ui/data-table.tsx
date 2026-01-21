@@ -22,6 +22,8 @@ import { Button } from "./button"
 import { Input } from "./input"
 import React from "react"
 import { Search } from "lucide-react"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./select"
+import { Category, Type } from "@/pages/FinancialRecord/financialRecords"
 
 function normalizeString(value: string, whiteSpaceReplace = "-") {
   return value
@@ -31,8 +33,14 @@ function normalizeString(value: string, whiteSpaceReplace = "-") {
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
 }
- 
+
+type PropsType = {
+  categories: Category[],
+  types: Type[],
+}
+
 interface DataTableProps<TData, TValue> {
+  props?: PropsType
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   pageSize?: number
@@ -40,6 +48,7 @@ interface DataTableProps<TData, TValue> {
 }
 
 export function DataTable<TData, TValue>({
+  props,
   columns,
   data,
   pageSize = 5,
@@ -47,8 +56,25 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [globalFilter, setGlobalFilter] = React.useState("")
 
+  const [categoryFilter, setCategoryFilter] = React.useState<string | null>(null)
+  const [typeFilter, setTypeFilter] = React.useState<string | null>(null)
+
+  const filteredData = React.useMemo(() => {
+    return data.filter((row: any) => {
+      if (categoryFilter && row.id_category?.toString() !== categoryFilter)  {
+        return false
+      }
+
+      if (typeFilter && row.id_type?.toString() !== typeFilter) {
+        return false
+      }
+
+      return true
+    })
+  }, [data, categoryFilter, typeFilter])
+
   const table = useReactTable({
-    data,
+    data: filteredData,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -58,8 +84,8 @@ export function DataTable<TData, TValue>({
     filterFns: {
       fuzzy: (row, _, value) => {
         const data = row.original
-        const search = normalizeString(value as string)
-        return searchFields.some((field) => normalizeString(data[field].toString()).includes(search))
+        const search = normalizeString(String(value) ?? '')
+        return searchFields.some((field) => normalizeString(String(data[field])).includes(search))
       }
     },
     globalFilterFn: 'fuzzy' as FilterFnOption<TData>,
@@ -72,15 +98,62 @@ export function DataTable<TData, TValue>({
   return (
     <div className="overflow-hidden rounded-md border">
       <div className="flex items-center py-4 mx-4 gap-2">
-        <Search color="gray"/>
-        <Input
-          placeholder="Pesquisar..."
-          value={globalFilter}
-          onChange={(event) =>
-            setGlobalFilter(event.target.value)
-          }
-          className="max-w-sm"
-        />
+          <Search color="gray" width={50}/>
+          
+          <Input
+            placeholder="Pesquisar..."
+            value={globalFilter}
+            onChange={(event) =>
+              setGlobalFilter(event.target.value)
+            }
+            className="max-w-sm"
+            />
+
+          {/* CATEGORY */}
+         <Select
+              value={categoryFilter ?? 'all'}
+              onValueChange={(value) => {
+                  setCategoryFilter(value === 'all' ? null : value);
+              }}
+          >
+              <SelectTrigger>
+                  <SelectValue placeholder="Categoria" />
+              </SelectTrigger>
+              <SelectContent>
+                  <SelectItem value="all">Todos</SelectItem>
+                  {props?.categories?.map((p, index) => (
+                      <SelectItem
+                          key={index}
+                          value={p.id.toString()}
+                      >
+                          {p.description}
+                      </SelectItem>
+                  ))}
+              </SelectContent>
+          </Select>
+
+          {/* TYPE */}
+          <Select
+              value={typeFilter ?? 'all'}
+              onValueChange={(value) => {
+                  setTypeFilter(value === 'all' ? null : value);
+              }}
+          >
+              <SelectTrigger>
+                  <SelectValue placeholder="Tipo" />
+              </SelectTrigger>
+              <SelectContent>
+                  <SelectItem value="all">Todos</SelectItem>
+                  {props?.types?.map((p, index) => (
+                      <SelectItem
+                          key={index}
+                          value={p.id.toString()}
+                      >
+                          {p.description}
+                      </SelectItem>
+                  ))}
+              </SelectContent>
+          </Select>
       </div>
       <Table>
         <TableHeader>

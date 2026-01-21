@@ -9,6 +9,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import {
@@ -27,7 +28,7 @@ import { Edit, Trash } from 'lucide-react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 import { Status } from '../Process/process';
-import { FinancialRecord } from './financialRecords';
+import { Category, FinancialRecord, Type } from './financialRecords';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -43,6 +44,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 type PageProps = {
     financialRecords: FinancialRecord[];
     statuses: Status[];
+    categories: Category[];
+    types: Type[];
     success?: string;
     error?: string;
 };
@@ -53,15 +56,7 @@ type FormDataProps = {
 
 export default function FinancialRecords() {
     const { props } = usePage<PageProps>();
-    const {
-        delete: destroy,
-        processing,
-        put,
-        post,
-        get,
-        data,
-        setData,
-    } = useForm<FormDataProps>();
+    const { delete: destroy, processing, get } = useForm<FormDataProps>();
 
     useEffect(() => {
         if (props.success || props.error) {
@@ -83,26 +78,44 @@ export default function FinancialRecords() {
         );
     };
 
-    console.log(props.financialRecords);
-
     const columns: ColumnDef<FinancialRecord>[] = [
         {
-            accessorKey: 'id_type',
+            accessorKey: 'type_description',
             header: 'Tipo',
             cell: ({ row }) => {
                 const record = row.original;
-                return <p>{record.type.description}</p>;
+                let variant;
+                let className;
+
+                switch (row.original.type?.id.toString()) {
+                    case '1':
+                        variant = 'outline';
+                        className = 'bg-green-100 text-green-900';
+                        break;
+                    case '2':
+                        variant = 'outline';
+                        className = 'bg-red-100 text-red-900 ';
+                        break;
+                    default:
+                        variant = 'outline';
+                        break;
+                }
+                return (
+                    <Badge className={className}>
+                        {record.type.description}
+                    </Badge>
+                );
             },
         },
         {
-            accessorKey: 'id_process',
+            accessorKey: 'process_number',
             header: 'Processo',
             cell: ({ row }) => {
                 return <p>{row?.original?.process?.number}</p>;
             },
         },
         {
-            accessorKey: 'id_category',
+            accessorKey: 'category_description',
             header: 'Categoria',
             cell: ({ row }) => {
                 return <p>{row.original.category.description}</p>;
@@ -116,7 +129,25 @@ export default function FinancialRecords() {
             accessorKey: 'value',
             header: 'Valor',
             cell: ({ row }) => {
-                return <p>R$ {row.original.value}</p>;
+                const record = row.original;
+                let className;
+                let indicator;
+
+                switch (row.original.type?.id.toString()) {
+                    case '1':
+                        indicator = '+';
+                        className = ' text-green-600';
+                        break;
+                    case '2':
+                        indicator = '-';
+                        className = ' text-red-600 ';
+                        break;
+                }
+                return (
+                    <p className={className}>
+                        {indicator} R$ {record.value}
+                    </p>
+                );
             },
         },
         {
@@ -130,13 +161,30 @@ export default function FinancialRecords() {
             },
         },
         {
-            id: 'id',
+            id: 'status_description',
             header: 'Status',
             cell: ({ row }) => {
                 const record = row.original;
+                let className;
+                let indicator;
 
+                switch (row.original.id_status?.toString()) {
+                    case '1':
+                        indicator = '+';
+                        className =
+                            ' bg-yellow-100 text-yellow-600 w-30 rounded-md';
+                        break;
+                    case '2':
+                        indicator = '-';
+                        className = ' bg-green-100 text-green-600 w-30 rounded-md';
+                        break;
+                    case '3':
+                        indicator = '-';
+                        className = ' bg-red-100 text-red-600 w-30 rounded-md';
+                        break;
+                }
                 return (
-                    <div className="w-30">
+                    <div className={className}>
                         <Select
                             value={record.id_status.toString()}
                             onValueChange={(value) => {
@@ -236,13 +284,19 @@ export default function FinancialRecords() {
             <div className="m-4 mt-0">
                 <DataTable
                     columns={columns}
+                    props={{
+                        categories: props.categories,
+                        types: props.types,
+                    }}
                     data={props.financialRecords}
                     searchFields={[
-                        'process',
-                        'type',
-                        'category',
-                        'status',
+                        'type_description',
+                        'process_number',
+                        'category_description',
+                        'status_description',
                         'description',
+                        'value',
+                        'created_at',
                     ]}
                 ></DataTable>
             </div>

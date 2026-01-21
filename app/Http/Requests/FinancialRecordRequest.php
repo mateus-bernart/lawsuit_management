@@ -13,8 +13,8 @@ class FinancialRecordRequest extends FormRequest
             'id_category' => 'required|integer',
             'id_process' => 'nullable',
             'id_status' => 'required|integer',
-            'value' => 'required|numeric|max:255',
-            'description' => 'required|string|max:999999999',
+            'value' => 'required|numeric|max:999999999',
+            'description' => 'required|string|max:255',
         ];
     }
 
@@ -26,10 +26,10 @@ class FinancialRecordRequest extends FormRequest
             'id_status.required' => 'O campo status é obrigatório.',
             'value.required' => 'O campo valor é obrigatório.',
             'value.numeric' => 'O campo valor deve ser um número.',
-            'value.max' => 'O campo valor não pode exceder 255 caracteres.',
+            'value.max' => 'O campo valor não pode exceder 9 caracteres.',
             'description.required' => 'O campo descrição é obrigatório.',
             'description.string' => 'O campo descrição deve ser uma string.',
-            'description.max' => 'O campo descrição não pode exceder 9 caracteres.',
+            'description.max' => 'O campo descrição não pode exceder 255 caracteres.',
         ];
     }
 }
