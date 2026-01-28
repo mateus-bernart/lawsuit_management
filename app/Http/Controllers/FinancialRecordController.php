@@ -46,6 +46,9 @@ class FinancialRecordController extends Controller
 
     public function create()
     {
+
+        $userId = auth()->user()->id;
+
         $financialRecords =
             FinancialRecord::with("statuses")
             ->with("category")
@@ -55,7 +58,10 @@ class FinancialRecordController extends Controller
         $statuses = FinancialRecordStatus::all();
         $categories = Category::all();
         $types = FinancialRecordType::all();
-        $processes = Process::all();
+        $processes = Process::where([
+            'id_user' => $userId,
+            'active' => 1
+        ])->get();
 
         return inertia('FinancialRecord/Create')->with([
             'financialRecords' => $financialRecords,
@@ -82,9 +88,11 @@ class FinancialRecordController extends Controller
     public function edit(FinancialRecord $financialRecord)
     {
         $userId = auth()->user()->id;
-
         $statuses = FinancialRecordStatus::all();
-        $processes = Process::where('id_user', $userId)->get();
+        $processes = Process::where([
+            'id_user' => $userId,
+            'active' => 1
+        ])->get();
         $types = FinancialRecordType::all();
         $categories = Category::all();
 
