@@ -81,18 +81,22 @@ class FinancialRecordController extends Controller
 
     public function edit(FinancialRecord $financialRecord)
     {
+        $userId = auth()->user()->id;
+
         $statuses = FinancialRecordStatus::all();
-        $processes = Process::all();
+        $processes = Process::where('id_user', $userId)->get();
         $types = FinancialRecordType::all();
         $categories = Category::all();
+
         return inertia('FinancialRecord/Create')->with([
             'financialRecord' => $financialRecord,
-        ])->with([
-            'statuses' => $statuses,
-            'processes' => $processes,
-            'types' => $types,
-            'categories' => $categories
-        ]);
+        ])
+            ->with([
+                'statuses' => $statuses,
+                'processes' => $processes,
+                'types' => $types,
+                'categories' => $categories
+            ]);
     }
 
     public function destroy(FinancialRecord $financialRecord)

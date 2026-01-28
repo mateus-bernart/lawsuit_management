@@ -59,13 +59,17 @@ export default function Create({
         description: financialRecord?.description || '',
     });
 
-
-
     function handleSubmit(event: React.FormEvent) {
         event.preventDefault();
 
-        const onlyNumbers = data?.value?.replace(/\D/g, '');
-        const cleanValue = Number(onlyNumbers) / 100;
+        let cleanValue: number;
+
+        if (typeof data.value === 'number') {
+            cleanValue = data.value;
+        } else {
+            const onlyNumbers = String(data.value || '').replace(/\D/g, '');
+            cleanValue = Number(onlyNumbers) / 100;
+        }
 
         const payload = {
             ...data,
@@ -79,12 +83,11 @@ export default function Create({
         }
     }
 
-  
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Adicionar Registro Financeiro" />
             <Card className="m-6">
-                <CardHeader className="text-2xl font-serif font-bold">
+                <CardHeader className="font-serif text-2xl font-bold">
                     Adicionar novo registro financeiro
                 </CardHeader>
                 <CardContent>
