@@ -24,6 +24,11 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from '@/components/ui/tooltip';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
@@ -190,23 +195,39 @@ export default function Processes() {
 
                 return (
                     <div className="flex gap-2">
-                        <Button
-                            variant={'ghost'}
-                            size="icon"
-                            onClick={() => get(`/processes/${process.id}/edit`)}
-                        >
-                            <Edit></Edit>
-                        </Button>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    variant={'ghost'}
+                                    size="icon"
+                                    onClick={() =>
+                                        get(`/processes/${process.id}/edit`)
+                                    }
+                                >
+                                    <Edit />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Editar</p>
+                            </TooltipContent>
+                        </Tooltip>
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
-                                <Button
-                                    variant="destructive"
-                                    className="hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-800"
-                                    size="icon"
-                                    disabled={processing}
-                                >
-                                    <Trash />
-                                </Button>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            variant="destructive"
+                                            className="hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-800"
+                                            size="icon"
+                                            disabled={processing}
+                                        >
+                                            <Trash />
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Excluir</p>
+                                    </TooltipContent>
+                                </Tooltip>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                                 <AlertDialogHeader>

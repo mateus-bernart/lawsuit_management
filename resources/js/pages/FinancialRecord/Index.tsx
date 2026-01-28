@@ -19,6 +19,12 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { formatCurrencyView } from '@/helpers/maskMoney';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
@@ -29,7 +35,6 @@ import { useEffect } from 'react';
 import { toast } from 'sonner';
 import { Status } from '../Process/process';
 import { Category, FinancialRecord, Type } from './financialRecords';
-import { formatCurrencyView } from '@/helpers/maskMoney';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -146,7 +151,7 @@ export default function FinancialRecords() {
                 }
 
                 console.log(record.value);
-                
+
                 return (
                     <p className={className}>
                         {indicator} R$ {formatCurrencyView(record.value)}
@@ -223,26 +228,42 @@ export default function FinancialRecords() {
                 return (
                     <div className="flex gap-2">
                         <div className="flex items-center">
-                            <Button
-                                variant={'ghost'}
-                                size="icon"
-                                onClick={() =>
-                                    get(`/financial-records/${record.id}/edit`)
-                                }
-                            >
-                                <Edit></Edit>
-                            </Button>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        variant={'ghost'}
+                                        size="icon"
+                                        onClick={() =>
+                                            get(
+                                                `/financial-records/${record.id}/edit`,
+                                            )
+                                        }
+                                    >
+                                        <Edit />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Editar</p>
+                                </TooltipContent>
+                            </Tooltip>
                         </div>
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
-                                <Button
-                                    variant="destructive"
-                                    className="hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-800"
-                                    size="icon"
-                                    disabled={processing}
-                                >
-                                    <Trash />
-                                </Button>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            variant="destructive"
+                                            className="hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-800"
+                                            size="icon"
+                                            disabled={processing}
+                                        >
+                                            <Trash />
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Excluir</p>
+                                    </TooltipContent>
+                                </Tooltip>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                                 <AlertDialogHeader>
