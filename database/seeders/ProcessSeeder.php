@@ -18,6 +18,7 @@ class ProcessSeeder extends Seeder
       "description" => "Processo Judicial Exemplo",
       "id_type" => 1,
       "id_status" => 1,
+      "id_user" => 1,
       'created_at' => now(),
       'updated_at' => now(),
     ]);
@@ -26,6 +27,7 @@ class ProcessSeeder extends Seeder
       "description" => "Processo Judicial Exemplo 2",
       "id_type" => 2,
       "id_status" => 2,
+      "id_user" => 1,
       'created_at' => now(),
       'updated_at' => now(),
     ]);

@@ -16,12 +16,16 @@ class ProcessService
         'number' => $validated['number'],
         'description' => $validated['description'],
         'id_status' => $validated['id_status'],
+        'id_type' => $validated['id_type'],
+        'id_user' => auth()->user()->id,
       ]);
     } else {
       $process->update([
         'number' => $validated['number'],
         'description' => $validated['description'],
-        'id_status' => $validated['id_status']
+        'id_status' => $validated['id_status'],
+        'id_type' => $validated['id_type'],
+        'id_user' => auth()->user()->id,
       ]);
     }
 

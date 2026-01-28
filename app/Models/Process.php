@@ -11,6 +11,7 @@ class Process extends Model
   protected $fillable = [
     'id_type',
     'id_status',
+    'id_user',
     'number',
     'description',
     'active',
@@ -29,5 +30,10 @@ class Process extends Model
   public function type()
   {
     return $this->belongsTo(ProcessType::class, 'id_type', 'id');
+  }
+
+    public function user()
+  {
+    return $this->belongsTo(User::class, 'id_user', 'id');
   }
 }

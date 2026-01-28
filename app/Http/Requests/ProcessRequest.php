@@ -12,6 +12,7 @@ class ProcessRequest extends FormRequest
             'number' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             'id_status' => 'required',
+            'id_type' => 'required',
         ];
     }
 
@@ -24,7 +25,8 @@ class ProcessRequest extends FormRequest
             'description.required' => 'O campo descrição é obrigatório.',
             'description.string' => 'O campo descrição deve ser uma string.',
             'description.max' => 'O campo descrição não pode exceder 255 caracteres.',
-            'id_status.required' => 'O campo status é obrigatório.'
+            'id_status.required' => 'O campo status é obrigatório.',
+            'id_type.required' => 'O campo tipo é obrigatório.'
         ];
     }
 }

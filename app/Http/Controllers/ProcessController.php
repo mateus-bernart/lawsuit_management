@@ -13,7 +13,18 @@ class ProcessController extends Controller
 {
     public function index()
     {
-        $processes = Process::with("statuses")->with('type')->get();
+        $userId = auth()->user()->id;
+
+        $processes = Process::where('id_user', $userId)
+            ->with("statuses")->with('type')->get()
+            ->map(function ($record) {
+                return [
+                    ...$record->toArray(),
+                    'type_description' => $record->type?->description ?? '',
+                    'status_description' => $record->statuses?->description,
+                ];
+            });;
+
         $statuses = ProcessStatus::all();
 
         return inertia('Process/Index')->with([
@@ -25,7 +36,8 @@ class ProcessController extends Controller
     public function create()
     {
         $statuses = ProcessStatus::all();
-        return inertia('Process/Create')->with('statuses', $statuses);
+        $types = ProcessType::all();
+        return inertia('Process/Create')->with(['statuses' =>  $statuses, 'types' => $types]);
     }
 
     public function store(ProcessRequest $request, ProcessService $service)
@@ -44,12 +56,15 @@ class ProcessController extends Controller
     public function edit(Process $process)
     {
         $statuses = ProcessStatus::all();
+        $types = ProcessType::all();
+
         return inertia('Process/Create')->with([
             'process' => $process,
             'number' => $process->number,
             'description' => $process->description,
             'id_status' => $process->id_status,
-        ])->with('statuses', $statuses);
+            'id_type' => $process->id_type,
+        ])->with(['statuses' => $statuses, 'types' => $types]);
     }
 
     public function destroy(Process $process)

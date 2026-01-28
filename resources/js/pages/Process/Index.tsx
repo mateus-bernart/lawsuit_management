@@ -28,7 +28,7 @@ import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
-import { ChevronDown, Edit, Trash } from 'lucide-react';
+import { ChevronDown, Edit, Plus, Trash } from 'lucide-react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 import { Process, Status } from './process';
@@ -96,21 +96,10 @@ export default function Processes() {
     const columns: ColumnDef<Process>[] = [
         {
             accessorKey: 'number',
-            header: () => <div className="ml-9">Número</div>,
+            header: 'Número',
             cell: ({ row }) => {
                 const process = row.original;
-                return (
-                    <div className="flex items-center">
-                        <Button
-                            variant={'ghost'}
-                            size="icon"
-                            onClick={() => get(`/processes/${process.id}/edit`)}
-                        >
-                            <Edit></Edit>
-                        </Button>
-                        <p className="flex justify-center">{process.number}</p>
-                    </div>
-                );
+                return <p>{process.number}</p>;
             },
         },
         {
@@ -118,14 +107,14 @@ export default function Processes() {
             header: 'Descrição',
         },
         {
-            accessorKey: 'type',
+            accessorKey: 'type_description',
             header: 'Tipo',
             cell: ({ row }) => {
                 return <p>{row.original.type.description}</p>;
             },
         },
         {
-            id: 'id',
+            id: 'status_description',
             header: 'Status',
             cell: ({ row }) => {
                 const process = row.original;
@@ -201,6 +190,13 @@ export default function Processes() {
 
                 return (
                     <div className="flex gap-2">
+                        <Button
+                            variant={'ghost'}
+                            size="icon"
+                            onClick={() => get(`/processes/${process.id}/edit`)}
+                        >
+                            <Edit></Edit>
+                        </Button>
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
                                 <Button
@@ -247,7 +243,8 @@ export default function Processes() {
 
             <div className="my-4 mb-0 ml-4">
                 <Link href={'/processes/create'}>
-                    <Button className="text-md cursor-pointer bg-green-600 font-bold shadow-lg hover:bg-green-700">
+                    <Button className="text-md cursor-pointer bg-green-600 shadow-lg hover:bg-green-700">
+                        <Plus />
                         Adicionar processo
                     </Button>
                 </Link>
@@ -257,13 +254,10 @@ export default function Processes() {
                     columns={columns}
                     data={props.processes}
                     searchFields={[
-                        'brand',
-                        'model',
-                        'year',
-                        'status',
-                        'active',
-                        'plate_number',
-                        'kilometers',
+                        'number',
+                        'description',
+                        'type_description',
+                        'status_description',
                     ]}
                 ></DataTable>
             </div>

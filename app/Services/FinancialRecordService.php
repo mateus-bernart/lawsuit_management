@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\FinancialRecord;
 use App\Models\DefaultTask;
 use App\Models\Task;
+use Illuminate\Support\Facades\Auth;
 
 class FinancialRecordService
 {
@@ -16,6 +17,7 @@ class FinancialRecordService
         'id_category' => $validated['id_category'],
         'id_process' => $validated['id_process'] === "0" ? null : $validated['id_process'],
         'id_status' => $validated['id_status'],
+        'id_user' => auth()->user()->id,
         'description' => $validated['description'],
         'value' => $validated['value'],
       ]);
@@ -25,6 +27,7 @@ class FinancialRecordService
         'id_category' => $validated['id_category'],
         'id_process' => $validated['id_process'],
         'id_status' => $validated['id_status'],
+        'id_user' => auth()->user()->id,
         'description' => $validated['description'],
         'value' => $validated['value'],
       ]);

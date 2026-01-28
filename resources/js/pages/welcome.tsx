@@ -32,14 +32,14 @@ export default function Welcome({
                             <>
                                 <Link
                                     href={login()}
-                                    className="inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
+                                    className="flex items-center gap-2 rounded-sm border border-transparent bg-gray-200 px-5 py-1.5 text-xl leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
                                 >
                                     Entrar
                                 </Link>
                                 {canRegister && (
                                     <Link
                                         href={register()}
-                                        className="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
+                                        className="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-xl leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
                                     >
                                         Registrar
                                     </Link>
@@ -48,21 +48,27 @@ export default function Welcome({
                         )}
                     </nav>
                 </header>
-                <div className="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
-                    <main className="flex w-full max-w-[335px] flex-col-reverse lg:max-w-4xl lg:flex-row">
-                        <div className="flex-1 rounded-br-lg rounded-bl-lg bg-white p-6 pb-12 text-[13px] leading-[20px] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] lg:rounded-tl-lg lg:rounded-br-none lg:p-20 dark:bg-[#161615] dark:text-[#EDEDEC] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d]">
-                            <h1 className="mb-1 font-medium">
-                                Sistema de gerenciamento de processos.
-                            </h1>
-                            <p className="mb-2 text-[#706f6c] dark:text-[#A1A09A]">
-                                Organize suas despesas com facilidade e
-                                transparência
-                            </p>
-                        </div>
-                        <img src="/teste.png"></img>
-                    </main>
+                <div className="flex h-full w-full flex-col overflow-hidden rounded-lg bg-white shadow-lg lg:flex-row dark:bg-[#161615]">
+                    {/* Lado da imagem */}
+                    <div className="flex h-1/2 w-full items-center justify-center bg-gray-50 lg:h-auto lg:w-1/2 dark:bg-[#1A1A15]">
+                        <img
+                            src="logo2.png"
+                            alt="Logo"
+                            className="h-full w-full object-cover"
+                        />
+                    </div>
+
+                    {/* Lado do texto */}
+                    <div className="flex h-1/2 w-full flex-col justify-center p-6 sm:p-8 lg:h-auto lg:w-1/2 lg:p-12">
+                        <h1 className="mb-4 text-lg font-semibold sm:text-xl lg:text-2xl dark:text-[#EDEDEC]">
+                            Sistema de gerenciamento de processos
+                        </h1>
+                        <p className="text-sm leading-relaxed text-[#706f6c] sm:text-base dark:text-[#A1A09A]">
+                            Maior controle dos processos e gestão financeira
+                            para seu escritório.
+                        </p>
+                    </div>
                 </div>
-                <div className="hidden h-14.5 lg:block"></div>
             </div>
         </>
     );

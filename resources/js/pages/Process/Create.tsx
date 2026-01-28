@@ -13,6 +13,8 @@ import {
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
+import { Save } from 'lucide-react';
+import { Type } from '../FinancialRecord/financialRecords';
 import { Process, Status } from './process';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -33,14 +35,17 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function Create({
     process,
     statuses,
+    types,
 }: {
     process: Process;
     statuses: Status[];
+    types: Type[];
 }) {
     const { data, setData, post, errors, setError } = useForm({
         number: process?.number || '',
         description: process?.description || '',
         id_status: process?.id_status || '',
+        id_type: process?.id_type || '',
     });
 
     function handleSubmit(event: React.FormEvent) {
@@ -57,19 +62,19 @@ export default function Create({
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Adicionar Carro" />
             <Card className="m-6">
-                <CardHeader className="text-1 font-serif font-bold">
+                <CardHeader className="font-serif text-2xl font-bold">
                     Adicionar novo processo
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit}>
                         <div className="flex flex-row gap-2">
-                            <div className="mb-4 flex flex-col gap-2">
+                            <div className="mb-4 flex w-60 flex-col gap-2">
                                 <Label>
                                     <span className="text-red-400">* </span>
                                     Número do processo
                                 </Label>
                                 <Input
-                                    placeholder="Informe"
+                                    placeholder="Informe o número"
                                     value={data.number}
                                     onChange={(e) => {
                                         setData('number', e.target.value);
@@ -80,13 +85,13 @@ export default function Create({
                                     message={errors.number}
                                 ></InputError>
                             </div>
-                            <div className="mb-4 flex flex-col gap-2">
+                            <div className="mb-4 flex w-60 flex-col gap-2">
                                 <Label>
                                     <span className="text-red-400">* </span>
                                     Descrição
                                 </Label>
                                 <Input
-                                    placeholder="Informe"
+                                    placeholder="Informe uma descrição"
                                     value={data.description}
                                     onChange={(e) => {
                                         setData('description', e.target.value);
@@ -97,7 +102,9 @@ export default function Create({
                                     message={errors.description}
                                 ></InputError>
                             </div>
-                            <div className="flex flex-col gap-2">
+                        </div>
+                        <div className="flex flex-row gap-2">
+                            <div className="flex w-60 flex-col gap-2">
                                 <Label>
                                     <span className="text-red-400">* </span>
                                     Status
@@ -111,7 +118,7 @@ export default function Create({
                                     }}
                                 >
                                     <SelectTrigger>
-                                        <SelectValue placeholder="Selecione" />
+                                        <SelectValue placeholder="Selecione o status" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {statuses?.map((p, index) => (
@@ -128,8 +135,43 @@ export default function Create({
                                     message={errors.id_status}
                                 ></InputError>
                             </div>
+                            <div className="flex w-60 flex-col gap-2">
+                                <Label>
+                                    <span className="text-red-400">* </span>
+                                    Tipo
+                                </Label>
+
+                                <Select
+                                    value={data.id_type.toString()}
+                                    onValueChange={(value) => {
+                                        setError('id_type', '');
+                                        setData('id_type', value);
+                                    }}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Selecione o tipo" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {types?.map((p, index) => (
+                                            <SelectItem
+                                                key={index}
+                                                value={p.id.toString()}
+                                            >
+                                                {p.description}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <InputError
+                                    message={errors.id_type}
+                                ></InputError>
+                            </div>
                         </div>
-                        <Button type="submit" className="mt-4">
+                        <Button
+                            type="submit"
+                            className="mt-4 cursor-pointer bg-green-700"
+                        >
+                            <Save />
                             Salvar processo
                         </Button>
                     </form>

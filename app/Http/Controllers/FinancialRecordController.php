@@ -15,8 +15,11 @@ class FinancialRecordController extends Controller
 {
     public function index()
     {
+        $userId = auth()->user()->id;
+
         $financialRecords =
-            FinancialRecord::with(["statuses", "category", "type", "process"])
+            FinancialRecord::where('id_user', $userId)
+            ->with(["statuses", "category", "type", "process"])
             ->get()
             ->map(function ($record) {
                 return [
@@ -82,7 +85,6 @@ class FinancialRecordController extends Controller
         $processes = Process::all();
         $types = FinancialRecordType::all();
         $categories = Category::all();
-
         return inertia('FinancialRecord/Create')->with([
             'financialRecord' => $financialRecord,
         ])->with([

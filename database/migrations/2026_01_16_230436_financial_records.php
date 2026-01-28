@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId("id_category")->constrained("categories")->noActionOnDelete();
             $table->foreignId("id_process")->nullable()->constrained("processes")->noActionOnDelete();
             $table->foreignId("id_status")->constrained("financial_record_statuses")->default(1)->onDelete('no action');
+            $table->foreignId('id_user')->constrained("users")->onDelete('no action');
             $table->float("value");
             $table->string("description");
             $table->timestamps();

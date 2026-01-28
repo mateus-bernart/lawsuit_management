@@ -10,9 +10,10 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { maskMoney } from '@/helpers/maskMoney';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, router, useForm } from '@inertiajs/react';
 import {
     Category,
     FinancialRecord,
@@ -58,21 +59,32 @@ export default function Create({
         description: financialRecord?.description || '',
     });
 
+
+
     function handleSubmit(event: React.FormEvent) {
         event.preventDefault();
 
+        const onlyNumbers = data?.value?.replace(/\D/g, '');
+        const cleanValue = Number(onlyNumbers) / 100;
+
+        const payload = {
+            ...data,
+            value: cleanValue,
+        };
+
         if (financialRecord) {
-            post(`/financial-records/${financialRecord.id}`);
+            router.post(`/financial-records/${financialRecord.id}`, payload);
         } else {
-            post('/financial-records');
+            router.post('/financial-records', payload);
         }
     }
 
+  
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Adicionar Registro Financeiro" />
             <Card className="m-6">
-                <CardHeader className="text-1 font-serif font-bold">
+                <CardHeader className="text-2xl font-serif font-bold">
                     Adicionar novo registro financeiro
                 </CardHeader>
                 <CardContent>
@@ -89,7 +101,7 @@ export default function Create({
                                     }}
                                 >
                                     <SelectTrigger>
-                                        <SelectValue placeholder="Selecione" />
+                                        <SelectValue placeholder="Selecione o processo" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="0">
@@ -123,7 +135,7 @@ export default function Create({
                                     }}
                                 >
                                     <SelectTrigger>
-                                        <SelectValue placeholder="Selecione" />
+                                        <SelectValue placeholder="Selecione o tipo" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {types?.map((p, index) => (
@@ -154,7 +166,7 @@ export default function Create({
                                     }}
                                 >
                                     <SelectTrigger>
-                                        <SelectValue placeholder="Selecione" />
+                                        <SelectValue placeholder="Selecione a categoria" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {categories?.map((p, index) => (
@@ -187,7 +199,7 @@ export default function Create({
                                     }}
                                 >
                                     <SelectTrigger>
-                                        <SelectValue placeholder="Selecione" />
+                                        <SelectValue placeholder="Selecione o status" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {statuses?.map((p, index) => (
@@ -210,7 +222,7 @@ export default function Create({
                                     Descrição
                                 </Label>
                                 <Input
-                                    placeholder="Informe"
+                                    placeholder="Informe uma descrição"
                                     value={data.description}
                                     onChange={(e) => {
                                         setData('description', e.target.value);
@@ -227,8 +239,9 @@ export default function Create({
                                     Valor
                                 </Label>
                                 <Input
+                                    required
                                     placeholder="Informe"
-                                    value={data.value}
+                                    value={maskMoney(data.value)}
                                     onChange={(e) => {
                                         setData('value', e.target.value);
                                         setError('value', '');

@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create("processes", function (Blueprint $table) {
             $table->id();
-            $table->string("number");
-            $table->string("description");
             $table->foreignId("id_type")->constrained("process_types")->default(1)->onDelete('no action');
             $table->foreignId("id_status")->constrained("process_statuses")->default(1)->onDelete('no action');
+            $table->foreignId('id_user')->constrained("users")->onDelete('no action');
+            $table->string("number");
+            $table->string("description");
             $table->integer("active")->default(1);
             $table->timestamps();
         });

@@ -24,11 +24,12 @@ import { BreadcrumbItem } from '@/types';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { format, parseISO } from 'date-fns';
-import { Edit, Trash } from 'lucide-react';
+import { Edit, Plus, Trash } from 'lucide-react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 import { Status } from '../Process/process';
 import { Category, FinancialRecord, Type } from './financialRecords';
+import { formatCurrencyView } from '@/helpers/maskMoney';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -143,9 +144,12 @@ export default function FinancialRecords() {
                         className = ' text-red-600 ';
                         break;
                 }
+
+                console.log(record.value);
+                
                 return (
                     <p className={className}>
-                        {indicator} R$ {record.value}
+                        {indicator} R$ {formatCurrencyView(record.value)}
                     </p>
                 );
             },
@@ -176,7 +180,8 @@ export default function FinancialRecords() {
                         break;
                     case '2':
                         indicator = '-';
-                        className = ' bg-green-100 text-green-600 w-30 rounded-md';
+                        className =
+                            ' bg-green-100 text-green-600 w-30 rounded-md';
                         break;
                     case '3':
                         indicator = '-';
@@ -276,7 +281,8 @@ export default function FinancialRecords() {
 
             <div className="my-4 mb-0 ml-4">
                 <Link href={'/financial-records/create'}>
-                    <Button className="text-md cursor-pointer bg-green-600 font-bold shadow-lg hover:bg-green-700">
+                    <Button className="text-md cursor-pointer bg-green-600 shadow-lg hover:bg-green-700">
+                        <Plus />
                         Adicionar registro financeiro
                     </Button>
                 </Link>

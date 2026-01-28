@@ -13,6 +13,7 @@ class FinancialRecord extends Model
     'id_category',
     'id_process',
     'id_status',
+    'id_user',
     'value',
     'description',
   ];
@@ -35,5 +36,10 @@ class FinancialRecord extends Model
   public function type()
   {
     return $this->belongsTo(FinancialRecordType::class, 'id_type', 'id');
+  }
+
+  public function user()
+  {
+    return $this->belongsTo(User::class, 'id_user', 'id');
   }
 }
