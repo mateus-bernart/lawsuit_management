@@ -212,9 +212,9 @@ export default function Processes() {
                             </TooltipContent>
                         </Tooltip>
                         <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <AlertDialogTrigger asChild>
                                         <Button
                                             variant="destructive"
                                             className="hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-800"
@@ -223,12 +223,13 @@ export default function Processes() {
                                         >
                                             <Trash />
                                         </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <p>Excluir</p>
-                                    </TooltipContent>
-                                </Tooltip>
-                            </AlertDialogTrigger>
+                                    </AlertDialogTrigger>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Excluir</p>
+                                </TooltipContent>
+                            </Tooltip>
+
                             <AlertDialogContent>
                                 <AlertDialogHeader>
                                     <AlertDialogTitle>

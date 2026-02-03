@@ -71,6 +71,7 @@ export default function FinancialRecords() {
     }, [props, props.success, props.error]);
 
     const handleDeleteFinancialRecord = (id: number) => {
+        console.log(id);
         destroy(`/financial-records/${id}`);
     };
 
@@ -149,8 +150,6 @@ export default function FinancialRecords() {
                         className = ' text-red-600 ';
                         break;
                 }
-
-                console.log(record.value);
 
                 return (
                     <p className={className}>
@@ -248,9 +247,9 @@ export default function FinancialRecords() {
                             </Tooltip>
                         </div>
                         <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <AlertDialogTrigger asChild>
                                         <Button
                                             variant="destructive"
                                             className="hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-800"
@@ -259,12 +258,12 @@ export default function FinancialRecords() {
                                         >
                                             <Trash />
                                         </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <p>Excluir</p>
-                                    </TooltipContent>
-                                </Tooltip>
-                            </AlertDialogTrigger>
+                                    </AlertDialogTrigger>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Excluir</p>
+                                </TooltipContent>
+                            </Tooltip>
                             <AlertDialogContent>
                                 <AlertDialogHeader>
                                     <AlertDialogTitle>
