@@ -29,6 +29,7 @@ import {
     TooltipContent,
     TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { formatCurrencyView } from '@/helpers/maskMoney';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
@@ -149,6 +150,34 @@ export default function Processes() {
                     </div>
                 );
             },
+        },
+        {
+            accessorKey: 'initial_cause_value',
+            header: 'Valor da causa inicial',
+            cell: ({ row }) => (
+                <p>{formatCurrencyView(row.original.initial_cause_value)}</p>
+            ),
+        },
+        {
+            accessorKey: 'final_cause_value',
+            header: 'Valor da causa final',
+            cell: ({ row }) => (
+                <p>{formatCurrencyView(row.original.final_cause_value)}</p>
+            ),
+        },
+        {
+            accessorKey: 'initial_fee_value',
+            header: 'Valor dos honorários inicial',
+            cell: ({ row }) => (
+                <p>{formatCurrencyView(row.original.initial_fee_value)}</p>
+            ),
+        },
+        {
+            accessorKey: 'final_fee_value',
+            header: 'Valor dos honorários final',
+            cell: ({ row }) => (
+                <p>{formatCurrencyView(row.original.final_fee_value)}</p>
+            ),
         },
         {
             accessorKey: 'active',

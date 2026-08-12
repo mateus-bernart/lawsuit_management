@@ -122,7 +122,7 @@ class FinancialRecordController extends Controller
         $financialRecord->id_status = $request->id_status;
         $financialRecord->save();
 
-        return back()->with("success", "FinancialRecordStatus do processo atualizado!");
+        return back()->with("success", "Status do processo atualizado!");
     }
 
     public function changeStatus(FinancialRecord $financialRecord, $status)

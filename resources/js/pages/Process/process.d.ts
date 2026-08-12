@@ -8,6 +8,10 @@ export type Process = {
     active: boolean;
     description: string;
     created_at: string;
+    initial_cause_value: number;
+    final_cause_value: number;
+    initial_fee_value: number;
+    final_fee_value: number;
 };
 
 type Status = {

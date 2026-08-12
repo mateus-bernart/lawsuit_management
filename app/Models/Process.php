@@ -15,6 +15,10 @@ class Process extends Model
     'number',
     'description',
     'active',
+    'initial_cause_value',
+    'final_cause_value',
+    'initial_fee_value',
+    'final_fee_value',
   ];
 
   public function financialRecord()
@@ -32,7 +36,7 @@ class Process extends Model
     return $this->belongsTo(ProcessType::class, 'id_type', 'id');
   }
 
-    public function user()
+  public function user()
   {
     return $this->belongsTo(User::class, 'id_user', 'id');
   }

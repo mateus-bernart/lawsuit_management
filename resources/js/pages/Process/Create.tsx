@@ -10,6 +10,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { maskMoney, parseMoney } from '@/helpers/maskMoney';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
@@ -41,15 +42,35 @@ export default function Create({
     statuses: Status[];
     types: Type[];
 }) {
-    const { data, setData, post, errors, setError } = useForm({
+    const { data, setData, post, errors, setError, transform } = useForm({
         number: process?.number || '',
         description: process?.description || '',
+        initial_cause_value: process?.initial_cause_value
+            ? Math.round(process.initial_cause_value * 100).toString()
+            : '',
+        final_cause_value: process?.final_cause_value
+            ? Math.round(process.final_cause_value * 100).toString()
+            : '',
+        initial_fee_value: process?.initial_fee_value
+            ? Math.round(process.initial_fee_value * 100).toString()
+            : '',
+        final_fee_value: process?.final_fee_value
+            ? Math.round(process.final_fee_value * 100).toString()
+            : '',
         id_status: process?.id_status || '',
         id_type: process?.id_type || '',
     });
 
     function handleSubmit(event: React.FormEvent) {
         event.preventDefault();
+
+        transform((currentData) => ({
+            ...currentData,
+            initial_cause_value: parseMoney(currentData.initial_cause_value),
+            final_cause_value: parseMoney(currentData.final_cause_value),
+            initial_fee_value: parseMoney(currentData.initial_fee_value),
+            final_fee_value: parseMoney(currentData.final_fee_value),
+        }));
 
         if (process) {
             post(`/processes/${process.id}`);
@@ -60,7 +81,7 @@ export default function Create({
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Adicionar Carro" />
+            <Head title="Adicionar Processo" />
             <Card className="m-6">
                 <CardHeader className="font-serif text-2xl font-bold">
                     Adicionar novo processo
@@ -100,6 +121,44 @@ export default function Create({
                                 />
                                 <InputError
                                     message={errors.description}
+                                ></InputError>
+                            </div>
+                            <div className="mb-4 flex w-60 flex-col gap-2">
+                                <Label>
+                                    <span className="text-red-400">* </span>
+                                    Valor da causa inicial
+                                </Label>
+                                <Input
+                                    placeholder="Informe o valor"
+                                    value={maskMoney(data.initial_cause_value)}
+                                    onChange={(e) => {
+                                        const rawDigits =
+                                            e.target.value.replace(/\D/g, '');
+                                        setData(
+                                            'initial_cause_value',
+                                            rawDigits,
+                                        );
+                                        setError('initial_cause_value', '');
+                                    }}
+                                />
+                                <InputError
+                                    message={errors.initial_cause_value}
+                                ></InputError>
+                            </div>
+                            <div className="mb-4 flex w-60 flex-col gap-2">
+                                <Label>Valor da causa final</Label>
+                                <Input
+                                    placeholder="Informe o valor"
+                                    value={maskMoney(data.final_cause_value)}
+                                    onChange={(e) => {
+                                        const rawDigits =
+                                            e.target.value.replace(/\D/g, '');
+                                        setData('final_cause_value', rawDigits);
+                                        setError('final_cause_value', '');
+                                    }}
+                                />
+                                <InputError
+                                    message={errors.final_cause_value}
                                 ></InputError>
                             </div>
                         </div>
@@ -164,6 +223,41 @@ export default function Create({
                                 </Select>
                                 <InputError
                                     message={errors.id_type}
+                                ></InputError>
+                            </div>
+                            <div className="mb-4 flex w-60 flex-col gap-2">
+                                <Label>
+                                    <span className="text-red-400">* </span>
+                                    Valor dos honorários inicial
+                                </Label>
+                                <Input
+                                    placeholder="Informe o valor"
+                                    value={maskMoney(data.initial_fee_value)}
+                                    onChange={(e) => {
+                                        const rawDigits =
+                                            e.target.value.replace(/\D/g, '');
+                                        setData('initial_fee_value', rawDigits);
+                                        setError('initial_fee_value', '');
+                                    }}
+                                />
+                                <InputError
+                                    message={errors.initial_fee_value}
+                                ></InputError>
+                            </div>
+                            <div className="mb-4 flex w-60 flex-col gap-2">
+                                <Label>Valor dos honorários final</Label>
+                                <Input
+                                    placeholder="Informe o valor"
+                                    value={maskMoney(data.final_fee_value)}
+                                    onChange={(e) => {
+                                        const rawDigits =
+                                            e.target.value.replace(/\D/g, '');
+                                        setData('final_fee_value', rawDigits);
+                                        setError('final_fee_value', '');
+                                    }}
+                                />
+                                <InputError
+                                    message={errors.final_fee_value}
                                 ></InputError>
                             </div>
                         </div>
